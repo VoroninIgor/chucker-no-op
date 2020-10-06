@@ -15,7 +15,7 @@ import io.grpc.Metadata
 import io.grpc.MethodDescriptor
 import io.grpc.Status
 
-class GrpcChuckerInterceptor(
+public class GrpcChuckerInterceptor(
     private val context: Context,
     private val collector: ChuckerCollector = ChuckerCollector(context),
 ) : ClientInterceptor {
