@@ -1,8 +1,8 @@
 package com.chuckerteam.chucker.internal.data.repository
 
 import androidx.lifecycle.LiveData
-import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
-import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
+import com.chuckerteam.chucker.internal.data.entity.Transaction
+import com.chuckerteam.chucker.internal.data.entity.TransactionTuple
 import com.chuckerteam.chucker.internal.data.room.ChuckerDatabase
 import com.chuckerteam.chucker.internal.support.distinctUntilChanged
 
@@ -10,17 +10,17 @@ internal class HttpTransactionDatabaseRepository(private val database: ChuckerDa
 
     private val transactionDao get() = database.transactionDao()
 
-    override fun getFilteredTransactionTuples(code: String, path: String): LiveData<List<HttpTransactionTuple>> {
+    override fun getFilteredTransactionTuples(code: String, path: String): LiveData<List<TransactionTuple>> {
         val pathQuery = if (path.isNotEmpty()) "%$path%" else "%"
         return transactionDao.getFilteredTuples("$code%", pathQuery)
     }
 
-    override fun getTransaction(transactionId: Long): LiveData<HttpTransaction?> {
+    override fun getTransaction(transactionId: Long): LiveData<Transaction?> {
         return transactionDao.getById(transactionId)
             .distinctUntilChanged { old, new -> old?.hasTheSameContent(new) != false }
     }
 
-    override fun getSortedTransactionTuples(): LiveData<List<HttpTransactionTuple>> {
+    override fun getSortedTransactionTuples(): LiveData<List<TransactionTuple>> {
         return transactionDao.getSortedTuples()
     }
 
@@ -28,12 +28,12 @@ internal class HttpTransactionDatabaseRepository(private val database: ChuckerDa
         transactionDao.deleteAll()
     }
 
-    override suspend fun insertTransaction(transaction: HttpTransaction) {
+    override suspend fun insertTransaction(transaction: Transaction) {
         val id = transactionDao.insert(transaction)
         transaction.id = id ?: 0
     }
 
-    override fun updateTransaction(transaction: HttpTransaction): Int {
+    override fun updateTransaction(transaction: Transaction): Int {
         return transactionDao.update(transaction)
     }
 
@@ -41,5 +41,5 @@ internal class HttpTransactionDatabaseRepository(private val database: ChuckerDa
         transactionDao.deleteBefore(threshold)
     }
 
-    override suspend fun getAllTransactions(): List<HttpTransaction> = transactionDao.getAll()
+    override suspend fun getAllTransactions(): List<Transaction> = transactionDao.getAll()
 }

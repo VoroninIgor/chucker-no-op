@@ -11,7 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerActivityTransactionBinding
-import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.data.entity.Transaction
 import com.chuckerteam.chucker.internal.support.Sharable
 import com.chuckerteam.chucker.internal.support.TransactionCurlCommandSharable
 import com.chuckerteam.chucker.internal.support.TransactionDetailsSharable
@@ -87,7 +87,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
         else -> super.onOptionsItemSelected(item)
     }
 
-    private fun shareTransactionAsText(block: (HttpTransaction) -> Sharable): Boolean {
+    private fun shareTransactionAsText(block: (Transaction) -> Sharable): Boolean {
         val transaction = viewModel.transaction.value
         if (transaction == null) {
             showToast(getString(R.string.chucker_request_not_ready))
@@ -105,7 +105,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
         return true
     }
 
-    private fun shareTransactionAsFile(block: (HttpTransaction) -> Sharable): Boolean {
+    private fun shareTransactionAsFile(block: (Transaction) -> Sharable): Boolean {
         val transaction = viewModel.transaction.value
         if (transaction == null) {
             showToast(getString(R.string.chucker_request_not_ready))

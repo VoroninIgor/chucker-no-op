@@ -29,9 +29,9 @@ internal object RepositoryProvider {
     /**
      * Idempotent method. Must be called before accessing the repositories.
      */
-    fun initialize(applicationContext: Context) {
+    fun initialize(context: Context) {
         if (transactionRepository == null || throwableRepository == null) {
-            val db = ChuckerDatabase.create(applicationContext)
+            val db = ChuckerDatabase.create(context)
             transactionRepository = HttpTransactionDatabaseRepository(db)
             throwableRepository = RecordedThrowableDatabaseRepository(db)
         }

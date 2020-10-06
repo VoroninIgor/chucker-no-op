@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.map
-import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.data.entity.Transaction
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.combineLatest
 
@@ -37,7 +37,7 @@ internal class TransactionViewModel(transactionId: Long) : ViewModel() {
             transaction?.requestContentType?.contains("x-www-form-urlencoded", ignoreCase = true) ?: false
         }
 
-    val transaction: LiveData<HttpTransaction?> = RepositoryProvider.transaction().getTransaction(transactionId)
+    val transaction: LiveData<Transaction?> = RepositoryProvider.transaction().getTransaction(transactionId)
 
     val formatRequestBody: LiveData<Boolean> = doesRequestBodyRequireEncoding
         .combineLatest(encodeUrl) { requiresEncoding, encodeUrl ->

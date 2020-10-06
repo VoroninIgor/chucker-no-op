@@ -25,8 +25,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionPayloadBinding
-import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
-import com.chuckerteam.chucker.internal.support.calculateLuminance
+import com.chuckerteam.chucker.internal.data.entity.Transaction
 import com.chuckerteam.chucker.internal.support.combineLatest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -126,24 +125,6 @@ internal class TransactionPayloadFragment :
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         val transaction = viewModel.transaction.value
 
-        if (shouldShowSearchIcon(transaction)) {
-            val searchMenuItem = menu.findItem(R.id.search)
-            searchMenuItem.isVisible = true
-            val searchView = searchMenuItem.actionView as SearchView
-            searchView.setOnQueryTextListener(this)
-            searchView.setIconifiedByDefault(true)
-        }
-
-        if (shouldShowSaveIcon(transaction)) {
-            menu.findItem(R.id.save_body).apply {
-                isVisible = true
-                setOnMenuItemClickListener {
-                    createFileToSaveBody()
-                    true
-                }
-            }
-        }
-
         if (payloadType == PayloadType.REQUEST) {
             viewModel.doesRequestBodyRequireEncoding.observe(
                 viewLifecycleOwner,
@@ -154,23 +135,6 @@ internal class TransactionPayloadFragment :
         }
 
         super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    private fun shouldShowSaveIcon(transaction: HttpTransaction?) = when {
-        // SAF is not available on pre-Kit Kat so let's hide the icon.
-        (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) -> false
-        (payloadType == PayloadType.REQUEST) -> (0L != (transaction?.requestPayloadSize))
-        (payloadType == PayloadType.RESPONSE) -> (0L != (transaction?.responsePayloadSize))
-        else -> true
-    }
-
-    private fun shouldShowSearchIcon(transaction: HttpTransaction?) = when (payloadType) {
-        PayloadType.REQUEST -> {
-            (true == transaction?.isRequestBodyPlainText) && (0L != (transaction.requestPayloadSize))
-        }
-        PayloadType.RESPONSE -> {
-            (true == transaction?.isResponseBodyPlainText) && (0L != (transaction.responsePayloadSize))
-        }
     }
 
     override fun onAttach(context: Context) {
@@ -230,19 +194,18 @@ internal class TransactionPayloadFragment :
 
     private suspend fun processPayload(
         type: PayloadType,
-        transaction: HttpTransaction,
+        transaction: Transaction,
         formatRequestBody: Boolean
     ): MutableList<TransactionPayloadItem> {
         return withContext(Dispatchers.Default) {
             val result = mutableListOf<TransactionPayloadItem>()
 
             val headersString: String
-            val isBodyPlainText: Boolean
+
             val bodyString: String
 
             if (type == PayloadType.REQUEST) {
                 headersString = transaction.getRequestHeadersString(true)
-                isBodyPlainText = transaction.isRequestBodyPlainText
                 bodyString = if (formatRequestBody) {
                     transaction.getFormattedRequestBody()
                 } else {
@@ -250,7 +213,6 @@ internal class TransactionPayloadFragment :
                 }
             } else {
                 headersString = transaction.getResponseHeadersString(true)
-                isBodyPlainText = transaction.isResponseBodyPlainText
                 bodyString = transaction.getFormattedResponseBody()
             }
 
@@ -265,27 +227,17 @@ internal class TransactionPayloadFragment :
                 )
             }
 
-            // The body could either be an image, binary encoded or plain text.
-            val responseBitmap = transaction.responseImageBitmap
-            if (type == PayloadType.RESPONSE && responseBitmap != null) {
-                val bitmapLuminance = responseBitmap.calculateLuminance()
-                result.add(TransactionPayloadItem.ImageItem(responseBitmap, bitmapLuminance))
-            } else if (!isBodyPlainText) {
-                requireContext().getString(R.string.chucker_body_omitted).let {
+            if (bodyString.isNotBlank()) {
+                bodyString.lines().forEach {
                     result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
                 }
-            } else {
-                if (bodyString.isNotBlank()) {
-                    bodyString.lines().forEach {
-                        result.add(TransactionPayloadItem.BodyLineItem(SpannableStringBuilder.valueOf(it)))
-                    }
-                }
             }
+
             return@withContext result
         }
     }
 
-    private suspend fun saveToFile(type: PayloadType, uri: Uri, transaction: HttpTransaction): Boolean {
+    private suspend fun saveToFile(type: PayloadType, uri: Uri, transaction: Transaction): Boolean {
         return withContext(Dispatchers.IO) {
             try {
                 requireContext().contentResolver.openFileDescriptor(uri, "w")?.use {

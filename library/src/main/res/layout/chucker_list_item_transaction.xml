@@ -17,14 +17,14 @@
 
     <TextView
         android:id="@+id/code"
-        android:layout_width="@dimen/chucker_item_size"
+        android:layout_width="67dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:paddingEnd="@dimen/chucker_doub_grid"
         android:textAppearance="@style/Chucker.TextAppearance.ListItem"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="200" />
+        tools:text="ERROR" />
 
     <TextView
         android:id="@+id/path"
@@ -76,18 +76,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="start"
-        app:layout_constraintEnd_toStartOf="@+id/size"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/guideline"
         app:layout_constraintTop_toTopOf="@+id/timeStart"
         tools:text="8023 ms" />
 
-    <TextView
-        android:id="@+id/size"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="end"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/duration"
-        app:layout_constraintTop_toTopOf="@+id/duration"
-        tools:text="16.45 KB" />
 </androidx.constraintlayout.widget.ConstraintLayout>

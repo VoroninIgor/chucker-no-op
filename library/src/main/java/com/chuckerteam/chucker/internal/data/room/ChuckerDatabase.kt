@@ -4,10 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowable
+import com.chuckerteam.chucker.internal.data.entity.Transaction
 
-@Database(entities = [RecordedThrowable::class, HttpTransaction::class], version = 4, exportSchema = false)
+@Database(entities = [RecordedThrowable::class, Transaction::class], version = 4, exportSchema = false)
 internal abstract class ChuckerDatabase : RoomDatabase() {
 
     abstract fun throwableDao(): RecordedThrowableDao
@@ -17,11 +17,11 @@ internal abstract class ChuckerDatabase : RoomDatabase() {
         private const val OLD_DB_NAME = "chuck.db"
         private const val DB_NAME = "chucker.db"
 
-        fun create(applicationContext: Context): ChuckerDatabase {
+        fun create(context: Context): ChuckerDatabase {
             // We eventually delete the old DB if a previous version of Chuck/Chucker was used.
-            applicationContext.getDatabasePath(OLD_DB_NAME).delete()
+            context.getDatabasePath(OLD_DB_NAME).delete()
 
-            return Room.databaseBuilder(applicationContext, ChuckerDatabase::class.java, DB_NAME)
+            return Room.databaseBuilder(context, ChuckerDatabase::class.java, DB_NAME)
                 .fallbackToDestructiveMigration()
                 .build()
         }

@@ -6,9 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
-import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
-import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import com.chuckerteam.chucker.internal.data.entity.RecordedThrowableTuple
+import com.chuckerteam.chucker.internal.data.entity.Transaction
+import com.chuckerteam.chucker.internal.data.entity.TransactionTuple
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.NotificationHelper
 import kotlinx.coroutines.launch
@@ -17,7 +17,7 @@ internal class MainViewModel : ViewModel() {
 
     private val currentFilter = MutableLiveData<String>("")
 
-    val transactions: LiveData<List<HttpTransactionTuple>> = currentFilter.switchMap { searchQuery ->
+    val transactions: LiveData<List<TransactionTuple>> = currentFilter.switchMap { searchQuery ->
         with(RepositoryProvider.transaction()) {
             when {
                 searchQuery.isNullOrBlank() -> {
@@ -36,7 +36,7 @@ internal class MainViewModel : ViewModel() {
     val throwables: LiveData<List<RecordedThrowableTuple>> = RepositoryProvider.throwable()
         .getSortedThrowablesTuples()
 
-    suspend fun getAllTransactions(): List<HttpTransaction>? = RepositoryProvider.transaction().getAllTransactions()
+    suspend fun getAllTransactions(): List<Transaction>? = RepositoryProvider.transaction().getAllTransactions()
 
     fun updateItemsFilter(searchQuery: String) {
         currentFilter.value = searchQuery

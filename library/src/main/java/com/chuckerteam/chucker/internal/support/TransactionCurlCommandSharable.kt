@@ -1,12 +1,12 @@
 package com.chuckerteam.chucker.internal.support
 
 import android.content.Context
-import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.data.entity.Transaction
 import okio.Buffer
 import okio.Source
 
 internal class TransactionCurlCommandSharable(
-    private val transaction: HttpTransaction,
+    private val transaction: Transaction,
 ) : Sharable {
     override fun toSharableContent(context: Context): Source = Buffer().apply {
         var compressed = false

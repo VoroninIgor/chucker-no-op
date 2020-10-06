@@ -2,12 +2,12 @@ package com.chuckerteam.chucker.internal.support
 
 import android.content.Context
 import com.chuckerteam.chucker.R.string
-import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+import com.chuckerteam.chucker.internal.data.entity.Transaction
 import okio.Buffer
 import okio.Source
 
 internal class TransactionListDetailsSharable(
-    transactions: List<HttpTransaction>,
+    transactions: List<Transaction>,
     encodeUrls: Boolean,
 ) : Sharable {
     private val transactions = transactions.map { TransactionDetailsSharable(it, encodeUrls) }

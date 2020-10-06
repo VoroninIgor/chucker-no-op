@@ -1,6 +1,6 @@
 package com.chuckerteam.chucker.internal.support
 
-import com.chuckerteam.chucker.internal.data.entity.HttpHeader
+import com.chuckerteam.chucker.internal.data.entity.Header
 import com.google.gson.JsonParseException
 import com.google.gson.JsonParser
 import org.w3c.dom.Document
@@ -30,8 +30,8 @@ internal object FormatUtils {
     private const val SI_MULTIPLE = 1000
     private const val BASE_TWO_MULTIPLE = 1024
 
-    fun formatHeaders(httpHeaders: List<HttpHeader>?, withMarkup: Boolean): String {
-        return httpHeaders?.joinToString(separator = "") { header ->
+    fun formatHeaders(headers: List<Header>?, withMarkup: Boolean): String {
+        return headers?.joinToString(separator = "") { header ->
             if (withMarkup) {
                 "<b> ${header.name}: </b>${header.value} <br />"
             } else {

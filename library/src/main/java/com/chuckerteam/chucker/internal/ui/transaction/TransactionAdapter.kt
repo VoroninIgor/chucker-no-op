@@ -2,26 +2,22 @@ package com.chuckerteam.chucker.internal.ui.transaction
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
-import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerListItemTransactionBinding
-import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
-import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
+import com.chuckerteam.chucker.internal.data.entity.Transaction
+import com.chuckerteam.chucker.internal.data.entity.TransactionTuple
 import java.text.DateFormat
-import javax.net.ssl.HttpsURLConnection
 
 internal class TransactionAdapter internal constructor(
     context: Context,
     private val listener: TransactionClickListListener?
 ) : RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder>() {
-    private var transactions: List<HttpTransactionTuple> = arrayListOf()
+    private var transactions: List<TransactionTuple> = arrayListOf()
 
     private val colorDefault: Int = ContextCompat.getColor(context, R.color.chucker_status_default)
     private val colorRequested: Int = ContextCompat.getColor(context, R.color.chucker_status_requested)
@@ -40,8 +36,8 @@ internal class TransactionAdapter internal constructor(
     override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) =
         holder.bind(transactions[position])
 
-    fun setData(httpTransactions: List<HttpTransactionTuple>) {
-        this.transactions = httpTransactions
+    fun setData(transactions: List<TransactionTuple>) {
+        this.transactions = transactions
         notifyDataSetChanged()
     }
 
@@ -62,7 +58,7 @@ internal class TransactionAdapter internal constructor(
         }
 
         @SuppressLint("SetTextI18n")
-        fun bind(transaction: HttpTransactionTuple) {
+        fun bind(transaction: TransactionTuple) {
             transactionId = transaction.id
 
             itemBinding.apply {
@@ -70,18 +66,14 @@ internal class TransactionAdapter internal constructor(
                 host.text = transaction.host
                 timeStart.text = DateFormat.getTimeInstance().format(transaction.requestDate)
 
-                setProtocolImage(if (transaction.isSsl) ProtocolResources.Https() else ProtocolResources.Http())
-
-                if (transaction.status === HttpTransaction.Status.Complete) {
-                    code.text = transaction.responseCode.toString()
+                if (transaction.status === Transaction.Status.Complete) {
+                    code.text = if (transaction.responseCode.toString() == "OK") transaction.responseCode.toString() else "ERROR"
                     duration.text = transaction.durationString
-                    size.text = transaction.totalSizeString
                 } else {
                     code.text = ""
                     duration.text = ""
-                    size.text = ""
                 }
-                if (transaction.status === HttpTransaction.Status.Failed) {
+                if (transaction.status === Transaction.Status.Failed) {
                     code.text = "!!!"
                 }
             }
@@ -89,22 +81,12 @@ internal class TransactionAdapter internal constructor(
             setStatusColor(transaction)
         }
 
-        private fun setProtocolImage(resources: ProtocolResources) {
-            itemBinding.ssl.setImageDrawable(AppCompatResources.getDrawable(itemView.context, resources.icon))
-            ImageViewCompat.setImageTintList(
-                itemBinding.ssl,
-                ColorStateList.valueOf(ContextCompat.getColor(itemView.context, resources.color))
-            )
-        }
-
-        private fun setStatusColor(transaction: HttpTransactionTuple) {
+        private fun setStatusColor(transaction: TransactionTuple) {
             val color: Int = when {
-                (transaction.status === HttpTransaction.Status.Failed) -> colorError
-                (transaction.status === HttpTransaction.Status.Requested) -> colorRequested
+                (transaction.status === Transaction.Status.Failed) -> colorError
+                (transaction.status === Transaction.Status.Requested) -> colorRequested
                 (transaction.responseCode == null) -> colorDefault
-                (transaction.responseCode!! >= HttpsURLConnection.HTTP_INTERNAL_ERROR) -> color500
-                (transaction.responseCode!! >= HttpsURLConnection.HTTP_BAD_REQUEST) -> color400
-                (transaction.responseCode!! >= HttpsURLConnection.HTTP_MULT_CHOICE) -> color300
+                (transaction.responseCode != "OK") -> color500
                 else -> colorDefault
             }
             itemBinding.code.setTextColor(color)
