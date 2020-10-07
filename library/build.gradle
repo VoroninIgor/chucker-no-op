@@ -63,7 +63,7 @@ dependencies {
 
     // grpc
     def grpcVersion = "1.30.0"
-    def grpcKotlinVersion = "0.1.5" // CURRENT_GRPC_KOTLIN_VERSION
+    def grpcKotlinVersion = "0.2.0" // CURRENT_GRPC_KOTLIN_VERSION
     api "io.grpc:grpc-protobuf:$grpcVersion"
     api "io.grpc:grpc-stub:$grpcVersion"
     def withoutGrpcProtobuf = { exclude group: 'io.grpc', module: 'grpc-protobuf' }
