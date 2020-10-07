@@ -1,0 +1,38 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion rootProject.compileSdkVersion
+
+    compileOptions {
+        kotlinOptions.freeCompilerArgs += [
+            '-module-name', "com.github.ChuckerTeam.Chucker.library-no-op",
+            "-Xexplicit-api=strict"
+        ]
+    }
+
+    defaultConfig {
+        minSdkVersion rootProject.minSdkVersion
+    }
+
+    lintOptions {
+        warningsAsErrors true
+        abortOnError true
+    }
+}
+
+dependencies {
+    api "com.squareup.okhttp3:okhttp:$okhttp3Version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+
+    // grpc
+    def grpcVersion = "1.30.0"
+    def grpcKotlinVersion = "0.1.5" // CURRENT_GRPC_KOTLIN_VERSION
+    api "io.grpc:grpc-protobuf:$grpcVersion"
+    api "io.grpc:grpc-stub:$grpcVersion"
+    def withoutGrpcProtobuf = { exclude group: 'io.grpc', module: 'grpc-protobuf' }
+    api "io.grpc:grpc-kotlin-stub:$grpcKotlinVersion", withoutGrpcProtobuf
+}
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
+apply from: rootProject.file('gradle/kotlin-static-analysis.gradle')
