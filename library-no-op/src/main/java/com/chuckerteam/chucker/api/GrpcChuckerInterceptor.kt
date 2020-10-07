@@ -9,6 +9,8 @@ import io.grpc.ForwardingClientCall
 import io.grpc.MethodDescriptor
 
 public class GrpcChuckerInterceptor(
+    private val url: String = "",
+    private val port: Int = 0,
     private val context: Context,
     private val collector: ChuckerCollector = ChuckerCollector(context),
 ) : ClientInterceptor {
