@@ -50,7 +50,7 @@ dependencies {
     def coroutineVersion = '1.3.9'
 
     // Google libraries
-    def constraintLayoutVersion = '2.0.1'
+    def constraintLayoutVersion = '2.0.2'
     def materialComponentsVersion = '1.2.1'
     def roomVersion = '2.2.5'
     def fragmentVersion = '1.2.5'
