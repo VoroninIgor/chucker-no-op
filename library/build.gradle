@@ -62,7 +62,7 @@ dependencies {
     def okhttp3Version = '3.12.10'
 
     // grpc
-    def grpcVersion = "1.30.0"
+    def grpcVersion = "1.32.1"
     def grpcKotlinVersion = "0.1.5" // CURRENT_GRPC_KOTLIN_VERSION
     api "io.grpc:grpc-protobuf:$grpcVersion"
     api "io.grpc:grpc-stub:$grpcVersion"
