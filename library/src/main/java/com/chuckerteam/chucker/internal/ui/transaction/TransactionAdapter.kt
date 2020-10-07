@@ -63,7 +63,7 @@ internal class TransactionAdapter internal constructor(
 
             itemBinding.apply {
                 path.text = "${transaction.method} ${transaction.getFormattedPath(encode = false)}"
-                host.text = transaction.host
+                host.text = transaction.host + ":" + transaction.port
                 timeStart.text = DateFormat.getTimeInstance().format(transaction.requestDate)
 
                 if (transaction.status === Transaction.Status.Complete) {

@@ -66,20 +66,19 @@ internal class TransactionOverviewFragment : Fragment() {
             requestTime.text = transaction?.requestDateString
             responseTime.text = transaction?.responseDateString
             duration.text = transaction?.durationString
+            url.text = transaction?.urlFormatted
 
             protocol.isVisible = false
             requestSize.isVisible = false
             responseSize.isVisible = false
             totalSize.isVisible = false
             sslValue.isVisible = false
-            url.isVisible = false
 
             requestSizeLabel.isVisible = false
             responseSizeLabel.isVisible = false
             totalSizeLabel.isVisible = false
             ssl.isVisible = false
             protocolLabel.isVisible = false
-            urlLabel.isVisible = false
         }
     }
 }

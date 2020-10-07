@@ -27,6 +27,7 @@ internal class Transaction(
     @ColumnInfo(name = "tookMs") var tookMs: Long?,
     @ColumnInfo(name = "method") var method: String?,
     @ColumnInfo(name = "url") var url: String?,
+    @ColumnInfo(name = "port") var port: Int?,
     @ColumnInfo(name = "requestContentType") var requestContentType: String?,
     @ColumnInfo(name = "requestHeaders") var requestHeaders: String?,
     @ColumnInfo(name = "requestBody") var requestBody: String?,
@@ -44,6 +45,7 @@ internal class Transaction(
         tookMs = null,
         method = null,
         url = null,
+        port = null,
         requestContentType = null,
         requestHeaders = null,
         requestBody = null,
@@ -67,6 +69,9 @@ internal class Transaction(
             responseCode == null -> Status.Requested
             else -> Status.Complete
         }
+
+    val urlFormatted: String?
+        get() = "${url?:""}:${port?:""}"
 
     val requestDateString: String?
         get() = requestDate?.let { Date(it).toString() }

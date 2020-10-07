@@ -16,6 +16,8 @@ import io.grpc.MethodDescriptor
 import io.grpc.Status
 
 public class GrpcChuckerInterceptor(
+    private val address: String = "",
+    private val port: Int = 0,
     private val context: Context,
     private val collector: ChuckerCollector = ChuckerCollector(context),
 ) : ClientInterceptor {
@@ -26,6 +28,10 @@ public class GrpcChuckerInterceptor(
         next: Channel
     ): ClientCall<M, R> {
         val transaction = Transaction()
+        transaction.apply {
+            this.url = address
+            this.port = this@GrpcChuckerInterceptor.port
+        }
 
         return object : BackendForwardingClientCall<M, R>(methodDescriptor, next.newCall(methodDescriptor, callOptions)) {
 

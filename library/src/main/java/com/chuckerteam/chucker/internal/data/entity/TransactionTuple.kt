@@ -17,6 +17,7 @@ internal class TransactionTuple(
     @ColumnInfo(name = "protocol") var protocol: String?,
     @ColumnInfo(name = "method") var method: String?,
     @ColumnInfo(name = "host") var host: String?,
+    @ColumnInfo(name = "port") var port: Int?,
     @ColumnInfo(name = "path") var path: String?,
     @ColumnInfo(name = "scheme") var scheme: String?,
     @ColumnInfo(name = "responseCode") var responseCode: String?,
